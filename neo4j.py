@@ -30,8 +30,19 @@ def neo4j_neighbor_count(graph, id):
 	for record in results:
 		print(record)
 
+def neo4j_reachability_count(graph, id):
+	results = graph.cypher.execute("match (ei:junction {id:{id}}),(ej:junction),p=shortestPath((ei)-[:to*]-(ej)) return count(*)", {"id": id})
+	for record in results:
+		print(record)
+
 start = time.clock()
 neo4j_neighbor_count(graph, '10')
+end = time.clock()
+
+print(end - start)
+
+start = time.clock()
+neo4j_reachability_count(graph, '10')
 end = time.clock()
 
 print(end - start)
