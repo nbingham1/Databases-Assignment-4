@@ -4,18 +4,14 @@ from py2neo import Graph,Node,Relationship
 import csv
 import time
 
-graph = Graph()
 
 def neo4j_import(graph, filename):
+	i = 0
 	with open(filename) as tsv:
 		for line in csv.reader(tsv, delimiter="\t"):
-			print(line);
 			if len(line) >= 2 and len(line[0]) > 0 and line[0][0] != '#':
 				left = graph.find_one('junction', property_key='id', property_value=line[0])
 				right = graph.find_one('junction', property_key='id', property_value=line[1])
-	
-				print(left)
-				print(right)
 	
 				if left is None:
 					left = Node("junction", id=line[0])
@@ -24,9 +20,13 @@ def neo4j_import(graph, filename):
 	
 				left_to_right = Relationship(left, "to", right)
 				graph.create(left_to_right)
+			i += 1
+
+			if i >= 10000:
+				return
 		
 def neo4j_neighbor_count(graph, id):
-	results = graph.cypher.execute("match (ei:junction)-[:to]-() where ei.id={id} return count(*)", {"id": id})
+	results = graph.cypher.execute("match (ei:junction)-[:to]-(ej:junction) where ei.id={id} return count(ej)", {"id": id})
 	for record in results:
 		print(record)
 
@@ -35,14 +35,28 @@ def neo4j_reachability_count(graph, id):
 	for record in results:
 		print(record)
 
-start = time.clock()
-neo4j_neighbor_count(graph, '10')
-end = time.clock()
+graph = Graph()
 
-print(end - start)
+average_neighbor_delay = 0
+average_reachability_delay = 0
+node_count = 10
 
-start = time.clock()
-neo4j_reachability_count(graph, '10')
-end = time.clock()
+for i in range(0, node_count):
+	start = time.clock()
+	neo4j_neighbor_count(graph, str(i))
+	end = time.clock()
+	
+	average_neighbor_delay += end - start
 
-print(end - start)
+for i in range(0, node_count):
+	start = time.clock()
+	neo4j_reachability_count(graph, str(i))
+	end = time.clock()
+	
+	average_reachability_delay += end - start
+
+average_neighbor_delay /= node_count
+average_reachability_delay /= node_count
+
+print("Average Neighbor Delay = " + str(average_neighbor_delay))
+print("Average Reachability Delay = " + str(average_reachability_delay))
