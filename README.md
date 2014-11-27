@@ -21,9 +21,9 @@ pip install redis
 
 
 MySQL uses the pymysql connector
+
+pip install pymysql
+
 create user "client"@"localhost";
 create database assignment4;
 grant all on assignment4.* to "client"@"localhost";
-create table points (day int, trajectory int, latitude double, longitude double, altitude double, date text, time text);
-create table edges (from int, to int);
-create table nodes (id int, n int);
