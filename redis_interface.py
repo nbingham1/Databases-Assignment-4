@@ -1,6 +1,7 @@
 import redis
 import csv
 import os
+import time
 
 def redis_import(store, directory):
 	t = 0
@@ -35,7 +36,7 @@ def redis_day_point_count(store, key):
 
 r = redis.StrictRedis()
 
-redis_import(r, "Data")
+#redis_import(r, "Data")
 
 min = 9999999999
 max = 0
