@@ -3,6 +3,7 @@ Databases-Assignment-4
 
 CS 5320 Introduction to Databases Homework Assignment 4
 
+python 3.4 is used throughout
 
 Neo4J uses the py2neo connector
 
@@ -19,3 +20,8 @@ Redis uses the redis connector
 pip install redis
 
 
+MySQL uses the pymysql connector
+create user "client"@"localhost";
+create database assignment4;
+grant all on assignment4.* to "client"@"localhost";
+create table points (day int, trajectory int, latitude double, longitude double, altitude double, date text, time text);
