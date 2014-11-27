@@ -37,26 +37,51 @@ def neo4j_reachability_count(graph, id):
 
 graph = Graph()
 
-average_neighbor_delay = 0
-average_reachability_delay = 0
 node_count = 10
+
+average = 0
+min = 99999999999
+max = 0
 
 for i in range(0, node_count):
 	start = time.clock()
 	neo4j_neighbor_count(graph, str(i))
 	end = time.clock()
 	
-	average_neighbor_delay += end - start
+	diff = end - start
+
+	if diff < min:
+		min = diff
+	if diff > max:
+		max = diff
+	average += diff
+
+average /= node_count
+
+print(min)
+print(max)
+print(average)
+
+
+average = 0
+min = 9999999999
+max = 0
 
 for i in range(0, node_count):
 	start = time.clock()
 	neo4j_reachability_count(graph, str(i))
 	end = time.clock()
 	
-	average_reachability_delay += end - start
+	diff = end - start
 
-average_neighbor_delay /= node_count
-average_reachability_delay /= node_count
+	if diff < min:
+		min = diff
+	if diff > max:
+		max = diff
+	average += diff
 
-print("Average Neighbor Delay = " + str(average_neighbor_delay))
-print("Average Reachability Delay = " + str(average_reachability_delay))
+average /= node_count
+
+print(min)
+print(max)
+print(average)

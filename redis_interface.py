@@ -35,8 +35,48 @@ def redis_day_point_count(store, key):
 
 r = redis.StrictRedis()
 
-#redis_import(r, "Data")
+redis_import(r, "Data")
 
-redis_trajectory_point_count(r, "trajectory:0:0")
-redis_day_point_count(r, "trajectory:0")
+min = 9999999999
+max = 0
+average = 0
 
+for i in range(0, 10):
+	start = time.clock()	
+	redis_trajectory_point_count(r, "trajectory:0:" + str(i))
+	end = time.clock()
+
+	diff = end - start
+	if min > diff:
+		min = diff
+	if max < diff:
+		max = diff
+	average += diff
+
+average /= 10
+
+print(min)
+print(max)
+print(average)
+
+min = 9999999999
+max = 0
+average = 0
+
+for i in range(0, 10):
+	start = time.clock()
+	redis_day_point_count(r, "trajectory:" + str(i))
+	end = time.clock()
+
+	diff = end - start
+	if min > diff:
+		min = diff
+	if max < diff:
+		max = diff
+	average += diff
+
+average /= 10
+
+print(min)
+print(max)
+print(average)
